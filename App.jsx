@@ -1,92 +1,105 @@
-import React, { useState, useEffect } from "react";
+return (
+  <div style={{
+    padding: 20,
+    fontFamily: "Arial",
+    background: "#f5f7fb",
+    minHeight: "100vh"
+  }}>
+    <h1 style={{ color: "#222" }}>K Wholesale System</h1>
 
-export default function App() {
-  const [vendors, setVendors] = useState([]);
-  const [name, setName] = useState("");
-  const [amount, setAmount] = useState("");
+    <h2 style={{ color: "#007bff" }}>
+      Total Payments: ${totalAll}
+    </h2>
 
-  useEffect(() => {
-    const data = localStorage.getItem("vendors");
-    if (data) setVendors(JSON.parse(data));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("vendors", JSON.stringify(vendors));
-  }, [vendors]);
-
-  const addVendor = () => {
-    if (!name.trim()) return;
-    setVendors([...vendors, { name, payments: [] }]);
-    setName("");
-  };
-
-  const deleteVendor = (index) => {
-    const updated = vendors.filter((_, i) => i !== index);
-    setVendors(updated);
-  };
-
-  const addPayment = (index) => {
-    if (!amount) return;
-    const updated = [...vendors];
-    updated[index].payments.push(Number(amount));
-    setVendors(updated);
-    setAmount("");
-  };
-
-  const deletePayment = (vIndex, pIndex) => {
-    const updated = [...vendors];
-    updated[vIndex].payments.splice(pIndex, 1);
-    setVendors(updated);
-  };
-
-  const totalAll = vendors.reduce(
-    (sum, v) => sum + v.payments.reduce((a, b) => a + b, 0),
-    0
-  );
-
-  return (
-    <div style={{ padding: 20, fontFamily: "Arial" }}>
-      <h1>K Wholesale System</h1>
-
-      <h2>Total Payments: ${totalAll}</h2>
-
+    <div style={{
+      background: "#fff",
+      padding: 15,
+      borderRadius: 10,
+      marginTop: 20
+    }}>
       <h3>Add Vendor</h3>
       <input
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Vendor Name"
+        style={{ padding: 10, marginRight: 10 }}
       />
-      <button onClick={addVendor}>Add</button>
+      <button
+        onClick={addVendor}
+        style={{
+          padding: 10,
+          background: "#007bff",
+          color: "#fff",
+          border: "none",
+          borderRadius: 5
+        }}
+      >
+        Add
+      </button>
+    </div>
 
-      <h3 style={{ marginTop: 20 }}>Vendors</h3>
+    <h3 style={{ marginTop: 30 }}>Vendors</h3>
 
-      {vendors.map((v, i) => (
-        <div
-          key={i}
-          style={{
-            border: "1px solid #ccc",
-            padding: 10,
-            marginBottom: 15,
-            borderRadius: 8,
-          }}
-        >
+    {vendors.map((v, i) => (
+      <div
+        key={i}
+        style={{
+          background: "#fff",
+          padding: 15,
+          marginBottom: 15,
+          borderRadius: 10
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
           <strong>{v.name}</strong>
           <button
             onClick={() => deleteVendor(i)}
-            style={{ marginLeft: 10, color: "red" }}
+            style={{ color: "red", border: "none", background: "none" }}
           >
             Delete
           </button>
+        </div>
 
-          <div style={{ marginTop: 10 }}>
-            <input
-              type="number"
-              placeholder="Payment Amount"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-            <button onClick={() => addPayment(i)}>Add Payment</button>
-          </div>
+        <div style={{ marginTop: 10 }}>
+          <input
+            type="number"
+            placeholder="Payment Amount"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            style={{ padding: 10, marginRight: 10 }}
+          />
+          <button
+            onClick={() => addPayment(i)}
+            style={{
+              padding: 10,
+              background: "green",
+              color: "#fff",
+              border: "none",
+              borderRadius: 5
+            }}
+          >
+            Add Payment
+          </button>
+        </div>
 
-          <ul>
-            {v.payments.map((p, idx) => (
+        <ul style={{ marginTop: 10 }}>
+          {v.payments.map((p, idx) => (
+            <li key={idx}>
+              ${p}
+              <button
+                onClick={() => deletePayment(i, idx)}
+                style={{
+                  marginLeft: 10,
+                  color: "red",
+                  border: "none",
+                  background: "none"
+                }}
+              >
+                X
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        <p style={{ fontWeight: "bold" }}>
+          Total Paid: ${v.payments.reduce((a, b) => a + b, 0
