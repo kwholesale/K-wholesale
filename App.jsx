@@ -1,9 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function App() {
   const [vendors, setVendors] = useState([]);
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
+
+  // تحميل البيانات
+  useEffect(() => {
+    const data = localStorage.getItem("vendors");
+    if (data) setVendors(JSON.parse(data));
+  }, []);
+
+  // حفظ البيانات
+  useEffect(() => {
+    localStorage.setItem("vendors", JSON.stringify(vendors));
+  }, [vendors]);
 
   const addVendor = () => {
     if (!name.trim()) return;
@@ -19,9 +30,16 @@ export default function App() {
     setAmount("");
   };
 
+  const totalAll = vendors.reduce(
+    (sum, v) => sum + v.payments.reduce((a, b) => a + b, 0),
+    0
+  );
+
   return (
     <div style={{ padding: 20, fontFamily: "Arial" }}>
       <h1>K Wholesale System</h1>
+
+      <h2>Total Payments: ${totalAll}</h2>
 
       <h3>Add Vendor</h3>
       <input
