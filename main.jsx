@@ -1,14 +1,10 @@
-const addPayment = async (index) => {
-  if (!amount) return;
-
+const deleteVendor = async (index) => {
   const vendor = vendors[index];
-  const newPayments = [...vendor.payments, Number(amount)];
 
   await supabase
     .from("vendors")
-    .update({ payments: newPayments })
+    .delete()
     .eq("id", vendor.id);
 
   fetchVendors();
-  setAmount("");
 };
