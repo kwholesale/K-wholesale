@@ -1,11 +1,14 @@
-const addVendor = async () => {
-  if (!name.trim()) return;
+const addPayment = async (index) => {
+  if (!amount) return;
 
-  const { data } = await supabase
+  const vendor = vendors[index];
+  const newPayments = [...vendor.payments, Number(amount)];
+
+  await supabase
     .from("vendors")
-    .insert([{ name, payments: [] }])
-    .select();
+    .update({ payments: newPayments })
+    .eq("id", vendor.id);
 
-  setVendors([...vendors, ...data]);
-  setName("");
+  fetchVendors();
+  setAmount("");
 };
