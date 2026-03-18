@@ -5,13 +5,11 @@ export default function App() {
   const [name, setName] = useState("");
   const [amount, setAmount] = useState("");
 
-  // تحميل البيانات
   useEffect(() => {
     const data = localStorage.getItem("vendors");
     if (data) setVendors(JSON.parse(data));
   }, []);
 
-  // حفظ البيانات
   useEffect(() => {
     localStorage.setItem("vendors", JSON.stringify(vendors));
   }, [vendors]);
@@ -22,12 +20,23 @@ export default function App() {
     setName("");
   };
 
+  const deleteVendor = (index) => {
+    const updated = vendors.filter((_, i) => i !== index);
+    setVendors(updated);
+  };
+
   const addPayment = (index) => {
     if (!amount) return;
     const updated = [...vendors];
     updated[index].payments.push(Number(amount));
     setVendors(updated);
     setAmount("");
+  };
+
+  const deletePayment = (vIndex, pIndex) => {
+    const updated = [...vendors];
+    updated[vIndex].payments.splice(pIndex, 1);
+    setVendors(updated);
   };
 
   const totalAll = vendors.reduce(
@@ -52,10 +61,24 @@ export default function App() {
       <h3 style={{ marginTop: 20 }}>Vendors</h3>
 
       {vendors.map((v, i) => (
-        <div key={i} style={{ marginBottom: 20 }}>
+        <div
+          key={i}
+          style={{
+            border: "1px solid #ccc",
+            padding: 10,
+            marginBottom: 15,
+            borderRadius: 8,
+          }}
+        >
           <strong>{v.name}</strong>
+          <button
+            onClick={() => deleteVendor(i)}
+            style={{ marginLeft: 10, color: "red" }}
+          >
+            Delete
+          </button>
 
-          <div>
+          <div style={{ marginTop: 10 }}>
             <input
               type="number"
               placeholder="Payment Amount"
@@ -67,16 +90,3 @@ export default function App() {
 
           <ul>
             {v.payments.map((p, idx) => (
-              <li key={idx}>${p}</li>
-            ))}
-          </ul>
-
-          <p>
-            Total Paid: $
-            {v.payments.reduce((a, b) => a + b, 0)}
-          </p>
-        </div>
-      ))}
-    </div>
-  );
-}
